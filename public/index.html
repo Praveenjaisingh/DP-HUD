@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DP HUD</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="hud">
+        <div class="panel left">
+            <h3>SYSTEM STATUS</h3>
+            <div class="status-dot active"></div>
+            <p>VOICE ENGINE: ACTIVE</p>
+            <p>AI CORE: ONLINE</p>
+            <p>NEURAL LINK: STABLE</p>
+        </div>
+        <div class="center">
+            <div class="core-wrapper" id="aiCore">
+                <div class="pulse"></div>
+                <div class="pulse pulse2"></div>
+                <div class="ring ring1"></div>
+                <div class="ring ring2"></div>
+                <div class="ring ring3"></div>
+                <div class="ring ring4"></div>
+                <div class="core">
+                    DP
+                </div>
+            </div>
+            <div class="voice-bars">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="status" id="status">
+                Say "Hey DP Wake Up"
+            </div>
+            <div class="searchBox">
+                <input id="query" placeholder="Ask DP anything..." />
+                <button onclick="searchData()">Execute</button>
+            </div>
+            <div class="results" id="results"></div>
+        </div>
+        <div class="panel right">
+            <h3>VOICE MONITOR</h3>
+            <p id="liveText">Waiting...</p>
+            <div class="mini-wave"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

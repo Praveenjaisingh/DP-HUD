@@ -1,0 +1,381 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Orbitron', sans-serif;
+}
+
+body {
+    background: #05070f;
+    color: #00e5ff;
+    overflow: hidden;
+}
+
+
+.hud {
+    display: flex;
+    justify-content: space-between;
+    height: 100vh;
+    padding: 20px;
+}
+
+
+.panel {
+    width: 20%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 229, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+}
+
+.panel h3 {
+    color: #00e5ff;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.panel p {
+    font-size: 13px;
+    margin: 8px 0;
+    opacity: 0.8;
+}
+
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: red;
+    margin-bottom: 10px;
+    animation: blink 1s infinite;
+}
+
+.status-dot.active {
+    background: #00e5ff;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0.3
+    }
+}
+
+.center {
+    width: 55%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.core-wrapper {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin-bottom: 20px;
+}
+
+
+.pulse {
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 229, 255, 0.4);
+    animation: pulse 2s infinite;
+}
+
+.pulse2 {
+    animation-delay: 1s;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 1
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0
+    }
+}
+
+
+.ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 229, 255, 0.6);
+    box-shadow: 0 0 20px #00e5ff;
+}
+
+.ring1 {
+    inset: 0;
+    animation: rotate 6s linear infinite;
+}
+
+.ring2 {
+    inset: 20px;
+    border-style: dashed;
+    animation: rotateReverse 8s linear infinite;
+}
+
+.ring3 {
+    inset: 40px;
+    animation: rotate 10s linear infinite;
+    opacity: 0.7;
+}
+
+.ring4 {
+    inset: 60px;
+    border-color: rgba(0, 229, 255, 0.3);
+    animation: rotateReverse 12s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg)
+    }
+
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes rotateReverse {
+    from {
+        transform: rotate(360deg)
+    }
+
+    to {
+        transform: rotate(0deg)
+    }
+}
+
+.core {
+    position: absolute;
+    inset: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #00e5ff, #001b2e);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 42px;
+    font-weight: bold;
+    box-shadow: 0 0 40px #00e5ff;
+}
+
+.voice-bars {
+    display: flex;
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.voice-bars span {
+    width: 5px;
+    height: 20px;
+    background: #00e5ff;
+    animation: wave 1s infinite;
+}
+
+.voice-bars span:nth-child(2) {
+    animation-delay: .2s
+}
+
+.voice-bars span:nth-child(3) {
+    animation-delay: .4s
+}
+
+.voice-bars span:nth-child(4) {
+    animation-delay: .6s
+}
+
+.voice-bars span:nth-child(5) {
+    animation-delay: .8s
+}
+
+@keyframes wave {
+
+    0%,
+    100% {
+        height: 10px
+    }
+
+    50% {
+        height: 40px
+    }
+}
+
+.status {
+    margin: 10px 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.searchBox {
+    display: flex;
+    width: 80%;
+    margin-top: 15px;
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.searchBox input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    outline: none;
+    background: rgba(0, 0, 0, 0.5);
+    color: #00e5ff;
+}
+
+.searchBox button {
+    padding: 12px 20px;
+    background: #00e5ff;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.results {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.card {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.mini-wave {
+    width: 100%;
+    height: 50px;
+    margin-top: 10px;
+    background: linear-gradient(90deg, transparent, #00e5ff, transparent);
+    animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+    0% {
+        transform: translateX(-100%)
+    }
+
+    100% {
+        transform: translateX(100%)
+    }
+}
+
+.core-wrapper.active .core {
+    box-shadow: 0 0 80px #00e5ff;
+    transform: scale(1.05);
+    transition: 0.3s;
+}
+
+@media (max-width: 1024px) {
+    .hud {
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+        overflow-y: auto;
+    }
+
+    .panel {
+        width: 90%;
+        margin-bottom: 15px;
+    }
+
+    .center {
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .core-wrapper {
+        width: 220px;
+        height: 220px;
+    }
+
+    .core {
+        inset: 65px;
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        overflow-y: auto;
+    }
+
+    .hud {
+        padding: 10px;
+    }
+
+    .panel {
+        width: 100%;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .center {
+        width: 100%;
+    }
+
+    .core-wrapper {
+        width: 180px;
+        height: 180px;
+    }
+
+    .core {
+        inset: 55px;
+        font-size: 26px;
+        box-shadow: 0 0 25px #00e5ff;
+    }
+
+    .voice-bars span {
+        width: 4px;
+    }
+
+    .searchBox {
+        width: 95%;
+        flex-direction: column;
+    }
+
+    .searchBox button {
+        width: 100%;
+    }
+
+    .searchBox input {
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .core-wrapper {
+        width: 150px;
+        height: 150px;
+    }
+
+    .core {
+        inset: 45px;
+        font-size: 22px;
+    }
+
+    .panel h3 {
+        font-size: 14px;
+    }
+
+    .panel p {
+        font-size: 12px;
+    }
+}
