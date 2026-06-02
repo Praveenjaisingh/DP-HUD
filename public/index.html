@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DP HUD</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
@@ -32,7 +32,11 @@
                 </div>
             </div>
             <div class="voice-bars">
-                <span></span><span></span><span></span><span></span><span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
             <div class="status" id="status">
                 Say "Hey DP Wake Up"
@@ -42,6 +46,41 @@
                 <button onclick="searchData()">Execute</button>
             </div>
             <div class="results" id="results"></div>
+            <div class="dp-dashboard">
+                <div class="hud-card">
+                    <span class="label">CPU LOAD</span>
+                    <span class="value">98.7%</span>
+                </div>
+                <div class="hud-card">
+                    <span class="label">MEMORY</span>
+                    <span class="value">32 TB</span>
+                </div>
+                <div class="hud-card">
+                    <span class="label">NETWORK</span>
+                    <span class="value">SECURE</span>
+                </div>
+                <div class="hud-card">
+                    <span class="label">POWER CELL</span>
+                    <span class="value">100%</span>
+                </div>
+            </div>
+            <div class="scan-area">
+                <div class="scan-line"></div>
+            </div>
+            <div class="dp-info">
+                <div class="info-box">
+                    <h4>DP CORE</h4>
+                    <p>Advanced Voice Intelligence</p>
+                </div>
+                <div class="info-box">
+                    <h4>SECURITY</h4>
+                    <p>Level 10 Encryption Active</p>
+                </div>
+                <div class="info-box">
+                    <h4>TARGETING</h4>
+                    <p>Voice Command Detection Enabled</p>
+                </div>
+            </div>
         </div>
         <div class="panel right">
             <h3>VOICE MONITOR</h3>
@@ -49,7 +88,12 @@
             <div class="mini-wave"></div>
         </div>
     </div>
+    <div class="corner top-left"></div>
+    <div class="corner top-right"></div>
+    <div class="corner bottom-left"></div>
+    <div class="corner bottom-right"></div>
     <script src="script.js"></script>
+
 </body>
 
 </html>
