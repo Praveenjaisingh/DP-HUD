@@ -2,98 +2,234 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DP HUD</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DP HUD — ONLINE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-    <div class="hud">
-        <div class="panel left">
-            <h3>SYSTEM STATUS</h3>
-            <div class="status-dot active"></div>
-            <p>VOICE ENGINE: ACTIVE</p>
-            <p>AI CORE: ONLINE</p>
-            <p>NEURAL LINK: STABLE</p>
-        </div>
-        <div class="center">
-            <div class="core-wrapper" id="aiCore">
-                <div class="pulse"></div>
-                <div class="pulse pulse2"></div>
-                <div class="ring ring1"></div>
-                <div class="ring ring2"></div>
-                <div class="ring ring3"></div>
-                <div class="ring ring4"></div>
-                <div class="core">
-                    DP
-                </div>
-            </div>
-            <div class="voice-bars">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <div class="status" id="status">
-                Say "Hey DP Wake Up"
-            </div>
-            <div class="searchBox">
-                <input id="query" placeholder="Ask DP anything..." />
-                <button onclick="searchData()">Execute</button>
-            </div>
-            <div class="results" id="results"></div>
-            <div class="dp-dashboard">
-                <div class="hud-card">
-                    <span class="label">CPU LOAD</span>
-                    <span class="value">98.7%</span>
-                </div>
-                <div class="hud-card">
-                    <span class="label">MEMORY</span>
-                    <span class="value">32 TB</span>
-                </div>
-                <div class="hud-card">
-                    <span class="label">NETWORK</span>
-                    <span class="value">SECURE</span>
-                </div>
-                <div class="hud-card">
-                    <span class="label">POWER CELL</span>
-                    <span class="value">100%</span>
-                </div>
-            </div>
-            <div class="scan-area">
-                <div class="scan-line"></div>
-            </div>
-            <div class="dp-info">
-                <div class="info-box">
-                    <h4>DP CORE</h4>
-                    <p>Advanced Voice Intelligence</p>
-                </div>
-                <div class="info-box">
-                    <h4>SECURITY</h4>
-                    <p>Level 10 Encryption Active</p>
-                </div>
-                <div class="info-box">
-                    <h4>TARGETING</h4>
-                    <p>Voice Command Detection Enabled</p>
-                </div>
-            </div>
-        </div>
-        <div class="panel right">
-            <h3>VOICE MONITOR</h3>
-            <p id="liveText">Waiting...</p>
-            <div class="mini-wave"></div>
-        </div>
-    </div>
-    <div class="corner top-left"></div>
-    <div class="corner top-right"></div>
-    <div class="corner bottom-left"></div>
-    <div class="corner bottom-right"></div>
-    <script src="script.js"></script>
+    <div class="bg-grid"></div>
+    <div class="scan-overlay"></div>
 
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <header class="top-bar">
+        <div class="tb-left">
+            <span class="dot active"></span>
+            <span class="tb-label">DP-SYSTEM v3.1.4</span>
+        </div>
+        <div class="tb-center">
+            <span id="clock" class="tb-clock">--:--:--</span>
+        </div>
+        <div class="tb-right">
+            <span class="tb-label" id="dateStr">--/--/----</span>
+        </div>
+    </header>
+
+    <main class="hud">
+
+        <aside class="panel left-panel">
+            <div class="panel-header">
+                <span class="panel-tag">SYS</span>
+                <h3>SYSTEM STATUS</h3>
+            </div>
+            <div class="status-row">
+                <span class="dot active"></span>
+                <span>VOICE ENGINE</span>
+                <span class="badge ok">ACTIVE</span>
+            </div>
+            <div class="status-row">
+                <span class="dot active"></span>
+                <span>AI CORE</span>
+                <span class="badge ok">ONLINE</span>
+            </div>
+            <div class="status-row">
+                <span class="dot active"></span>
+                <span>NEURAL LINK</span>
+                <span class="badge ok">STABLE</span>
+            </div>
+            <div class="status-row">
+                <span class="dot pulse-red"></span>
+                <span>THREAT LEVEL</span>
+                <span class="badge none">NONE</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="panel-header" style="margin-top:8px;">
+                <span class="panel-tag">PWR</span>
+                <h3>POWER GRID</h3>
+            </div>
+            <div class="meter-row">
+                <span>ARC REACTOR</span>
+                <div class="meter">
+                    <div class="meter-fill" style="width:100%"></div>
+                </div>
+                <span>100%</span>
+            </div>
+            <div class="meter-row">
+                <span>SHIELDS</span>
+                <div class="meter">
+                    <div class="meter-fill" style="width:87%"></div>
+                </div>
+                <span>87%</span>
+            </div>
+            <div class="meter-row">
+                <span>WEAPONS</span>
+                <div class="meter">
+                    <div class="meter-fill warn" style="width:64%"></div>
+                </div>
+                <span>64%</span>
+            </div>
+
+            <div class="divider"></div>
+            <div class="mini-map">
+                <div class="mm-label">SECTOR SCAN</div>
+                <div class="mm-grid">
+                    <div class="mm-scan"></div>
+                    <div class="mm-blip b1"></div>
+                    <div class="mm-blip b2"></div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="center">
+
+            <div class="reactor-wrap" id="aiCore">
+                <div class="pulse-ring p1"></div>
+                <div class="pulse-ring p2"></div>
+                <div class="ring r1"></div>
+                <div class="ring r2"></div>
+                <div class="ring r3"></div>
+                <div class="ring r4"></div>
+                <div class="reactor-core">DP</div>
+            </div>
+
+
+            <div class="voice-bars" id="voiceBars">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+            <div class="status-text" id="status">Click anywhere, then say "Hey DP Wake Up"</div>
+            <div class="live-text mono" id="liveText">— STANDBY —</div>
+
+            <div class="search-wrap">
+                <div class="search-box">
+                    <span class="search-icon">⌖</span>
+                    <input id="query" placeholder="QUERY INPUT..." autocomplete="off" />
+                    <button onclick="searchData()">EXEC</button>
+                </div>
+            </div>
+
+            <div class="results" id="results"></div>
+
+            <div class="dashboard">
+                <div class="d-card">
+                    <span class="d-label">CPU LOAD</span>
+                    <span class="d-value">98.7%</span>
+                    <div class="d-bar">
+                        <div class="d-fill" style="width:98.7%"></div>
+                    </div>
+                </div>
+                <div class="d-card">
+                    <span class="d-label">MEMORY</span>
+                    <span class="d-value">32 TB</span>
+                    <div class="d-bar">
+                        <div class="d-fill" style="width:75%"></div>
+                    </div>
+                </div>
+                <div class="d-card">
+                    <span class="d-label">NETWORK</span>
+                    <span class="d-value">SECURE</span>
+                    <div class="d-bar">
+                        <div class="d-fill ok" style="width:100%"></div>
+                    </div>
+                </div>
+                <div class="d-card">
+                    <span class="d-label">POWER CELL</span>
+                    <span class="d-value">100%</span>
+                    <div class="d-bar">
+                        <div class="d-fill" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scan-strip">
+                <div class="ss-line"></div>
+                <span class="ss-label">ENVIRONMENTAL SCAN IN PROGRESS</span>
+            </div>
+
+        </section>
+
+        <aside class="panel right-panel">
+            <div class="panel-header">
+                <span class="panel-tag">MIC</span>
+                <h3>VOICE MONITOR</h3>
+            </div>
+            <div class="live-box" id="liveBox">
+                <p class="lb-text" id="liveTextRight">Waiting for input...</p>
+            </div>
+            <div class="wave-wrap">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="panel-header">
+                <span class="panel-tag">LOG</span>
+                <h3>COMMAND LOG</h3>
+            </div>
+            <div class="log" id="cmdLog">
+                <p class="log-entry">— SYSTEM BOOT —</p>
+                <p class="log-entry">— AWAITING COMMAND —</p>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="panel-header">
+                <span class="panel-tag">HUD</span>
+                <h3>CORE INFO</h3>
+            </div>
+            <div class="info-tag">DP CORE · Voice Intelligence</div>
+            <div class="info-tag">SECURITY · Lvl 10 Encryption</div>
+            <div class="info-tag">DETECT · Voice Command Active</div>
+        </aside>
+
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        function tick() {
+            const n = new Date();
+            document.getElementById('clock').textContent = n.toLocaleTimeString('en-IN', { hour12: false });
+            document.getElementById('dateStr').textContent = n.toLocaleDateString('en-IN');
+        }
+        tick(); setInterval(tick, 1000);
+
+        const origSetLive = window.setLive;
+        window.setLive = function (msg) {
+            document.getElementById('liveText').textContent = msg;
+            document.getElementById('liveTextRight').textContent = msg;
+            const log = document.getElementById('cmdLog');
+            const entry = document.createElement('p');
+            entry.className = 'log-entry';
+            entry.textContent = msg;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        };
+    </script>
 </body>
 
 </html>

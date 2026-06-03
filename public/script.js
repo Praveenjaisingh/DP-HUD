@@ -3,13 +3,8 @@ let state = "idle";
 let audioUnlocked = false;
 let welcomePlayed = false;
 
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-if (!SpeechRecognition) {
-    alert("Speech Recognition not supported");
-}
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SpeechRecognition) alert("Speech Recognition not supported in this browser.");
 
 const recognition = new SpeechRecognition();
 recognition.continuous = true;
@@ -17,127 +12,87 @@ recognition.interimResults = false;
 recognition.lang = "en-IN";
 
 let sessionTimer;
-
 function startSessionTimer() {
     clearTimeout(sessionTimer);
-
     sessionTimer = setTimeout(() => {
-        try {
-            recognition.stop();
-        } catch (e) { }
-
+        try { recognition.stop(); } catch (e) { }
         window.location.href = "index.html";
     }, 2 * 60 * 1000);
 }
-
 startSessionTimer();
-["click", "keydown", "mousemove", "touchstart"].forEach(evt => {
-    document.addEventListener(evt, startSessionTimer);
-});
+["click", "keydown", "mousemove", "touchstart"].forEach(evt =>
+    document.addEventListener(evt, startSessionTimer)
+);
 
 function setStatus(msg) {
-    document.getElementById("status").innerText = msg;
+    const el = document.getElementById("status");
+    if (el) el.innerText = msg;
 }
 
 function setLive(msg) {
-    document.getElementById("liveText").innerText = msg;
+    const el = document.getElementById("liveText");
+    if (el) el.innerText = msg;
+    const el2 = document.getElementById("liveTextRight");
+    if (el2) el2.innerText = msg;
+    const log = document.getElementById("cmdLog");
+    if (log && msg && msg !== "— STANDBY —") {
+        const entry = document.createElement("p");
+        entry.className = "log-entry";
+        entry.textContent = msg;
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight;
+    }
 }
+
 function unlockAudio() {
-
     if (audioUnlocked) return;
-
     try {
         audioUnlocked = true;
-
         if (!welcomePlayed) {
             welcomePlayed = true;
-
-            const s = new SpeechSynthesisUtterance(
-                "Yes boss, what can I do for you?"
-            );
-
-            s.volume = 1;
-            s.rate = 1;
-            s.pitch = 1;
-            s.lang = "en-IN";
-
+            const s = new SpeechSynthesisUtterance("Yes boss, what can I do for you?");
+            s.volume = 1; s.rate = 1; s.pitch = 1; s.lang = "en-IN";
             window.speechSynthesis.cancel();
             window.speechSynthesis.speak(s);
         }
-
         document.removeEventListener("click", unlockAudio);
         document.removeEventListener("keydown", unlockAudio);
-
-    } catch (e) {
-        console.log(e);
-    }
+    } catch (e) { console.log(e); }
 }
-
 document.addEventListener("click", unlockAudio);
 document.addEventListener("keydown", unlockAudio);
-
 function startMic() {
-    try {
-        recognition.start();
-        state = "listening";
-    } catch (e) { }
+    try { recognition.start(); state = "listening"; } catch (e) { }
 }
-
 function stopMic() {
-    try {
-        recognition.stop();
-    } catch (e) { }
+    try { recognition.stop(); } catch (e) { }
 }
 
 function speak(text, callback) {
-
-    if (!audioUnlocked) {
-        console.log("Audio blocked until user gesture");
-        return;
-    }
-
+    if (!audioUnlocked) { console.log("Audio blocked"); return; }
     startSessionTimer();
-
     stopMic();
     state = "speaking";
-
     window.speechSynthesis.cancel();
 
     const msg = new SpeechSynthesisUtterance(text);
-
-    msg.rate = 1;
-    msg.pitch = 1;
-    msg.volume = 1;
-    msg.lang = "en-IN";
+    msg.rate = 1; msg.pitch = 1; msg.volume = 1; msg.lang = "en-IN";
 
     const voices = window.speechSynthesis.getVoices();
-
-    const preferredVoice =
+    const preferred =
         voices.find(v => v.name.includes("Google")) ||
         voices.find(v => v.name.includes("Microsoft")) ||
         voices.find(v => v.lang.includes("en-IN")) ||
         voices[0];
+    if (preferred) msg.voice = preferred;
 
-    if (preferredVoice) {
-        msg.voice = preferredVoice;
-    }
-
-    msg.onerror = (e) => {
+    msg.onerror = e => {
         console.log("Speech error:", e);
-
         setTimeout(() => {
-            if (audioUnlocked) {
-                window.speechSynthesis.speak(
-                    new SpeechSynthesisUtterance(text)
-                );
-            }
+            if (audioUnlocked) window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
         }, 500);
     };
-
-    msg.onstart = () => {
-        setLive("🔊 Speaking...");
-    };
-
+    msg.onstart = () => setLive("🔊 Speaking...");
     msg.onend = () => {
         setTimeout(() => {
             state = "listening";
@@ -145,10 +100,7 @@ function speak(text, callback) {
             if (callback) callback();
         }, 800);
     };
-
-    setTimeout(() => {
-        window.speechSynthesis.speak(msg);
-    }, 200);
+    setTimeout(() => window.speechSynthesis.speak(msg), 200);
 }
 function cleanForVoice(text) {
     return text
@@ -159,30 +111,22 @@ function cleanForVoice(text) {
 }
 
 async function searchData() {
-
     startSessionTimer();
-
     const input = document.getElementById("query");
     const query = input.value.trim();
-
     if (!query) return;
 
     const results = document.getElementById("results");
-
     setStatus("🧠 Processing...");
     state = "processing";
 
     try {
         const res = await fetch("/api/users/home", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query })
         });
-
         const data = await res.json();
-
         results.innerHTML = "";
 
         const card = document.createElement("div");
@@ -194,19 +138,12 @@ async function searchData() {
         if (data.data?.city) {
             html += `🌍 ${data.data.city}<br>🌡 ${data.data.temperature}`;
             voiceResponse = `The weather in ${data.data.city} is ${data.data.temperature}`;
-
         } else if (Array.isArray(data.data?.news)) {
-            data.data.news.forEach((n, i) => {
-                html += `<p>${i + 1}. ${n}</p>`;
-            });
+            data.data.news.forEach((n, i) => { html += `<p>${i + 1}. ${n}</p>`; });
             voiceResponse = data.data.news.slice(0, 5).join(". ");
-
         } else if (Array.isArray(data.data?.results)) {
-            data.data.results.forEach((r, i) => {
-                html += `<p>${i + 1}. ${r}</p>`;
-            });
+            data.data.results.forEach((r, i) => { html += `<p>${i + 1}. ${r}</p>`; });
             voiceResponse = data.data.results.slice(0, 5).join(". ");
-
         } else {
             html += `<pre>${JSON.stringify(data.data, null, 2)}</pre>`;
             voiceResponse = JSON.stringify(data.data);
@@ -214,14 +151,12 @@ async function searchData() {
 
         card.innerHTML = html;
         results.appendChild(card);
-
         input.value = "";
         commandBuffer = "";
 
         setStatus("🎤 Say 'Hey DP Wake Up'");
         setLive("Ready");
         state = "idle";
-
         speak(cleanForVoice(voiceResponse || "Command executed successfully"));
 
     } catch (err) {
@@ -232,69 +167,45 @@ async function searchData() {
         speak("Something went wrong");
     }
 }
+
 recognition.onresult = async (event) => {
-
     startSessionTimer();
-
     let text = "";
-
     for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-            text += event.results[i][0].transcript + " ";
-        }
+        if (event.results[i].isFinal) text += event.results[i][0].transcript + " ";
     }
-
     const cleanText = text.toLowerCase().trim().replace(/\s+/g, " ");
     if (!cleanText) return;
-
     console.log("HEARD:", cleanText);
 
-    const wake =
-        /hey dp wake up|dp wake up|hey dp wake/i.test(cleanText);
-
-    const execute =
-        cleanText.includes("execute") ||
-        cleanText.includes("run command") ||
-        cleanText.includes("process it") ||
-        cleanText.includes("that's all");
+    const wake = /hey dp wake up|dp wake up|hey dp wake/i.test(cleanText);
+    const execute = cleanText.includes("execute") || cleanText.includes("run command") ||
+        cleanText.includes("process it") || cleanText.includes("that's all");
 
     if (state === "idle" && wake) {
-
         state = "speaking";
         commandBuffer = "";
-
-        document.getElementById("aiCore").classList.add("active");
-
+        document.getElementById("aiCore")?.classList.add("active");
         setStatus("🤖 Online");
         setLive("Waking up...");
-
         stopMic();
-
         if (!welcomePlayed) {
             welcomePlayed = true;
-
-            setTimeout(() => {
-                speak("Yes boss, what can I do for you?");
-            }, 300);
-
+            setTimeout(() => speak("Yes boss, what can I do for you?"), 300);
         } else {
             state = "listening";
             startMic();
         }
-
         return;
     }
 
     if (state !== "listening") return;
 
     if (execute) {
-
-        document.getElementById("aiCore").classList.remove("active");
+        document.getElementById("aiCore")?.classList.remove("active");
         document.getElementById("query").value = commandBuffer;
-
         setStatus("🧠 Executing...");
         setLive("Processing...");
-
         await searchData();
         return;
     }
@@ -305,47 +216,22 @@ recognition.onresult = async (event) => {
         .replace(/hey dp wake/g, "")
         .replace(/execute/g, "")
         .trim();
-
     if (!processed) return;
 
     commandBuffer = (commandBuffer + " " + processed).trim();
-
-    if (commandBuffer.length > 200) {
-        commandBuffer = commandBuffer.slice(-200);
-    }
-
+    if (commandBuffer.length > 200) commandBuffer = commandBuffer.slice(-200);
     document.getElementById("query").value = commandBuffer;
-
     setStatus("🎤 Recording...");
     setLive(commandBuffer);
 };
 
 recognition.onend = () => {
-    setTimeout(() => {
-        if (state === "listening") {
-            startMic();
-        }
-    }, 700);
+    setTimeout(() => { if (state === "listening") startMic(); }, 700);
 };
 
 setStatus("🎤 Click anywhere once, then say 'Hey DP Wake Up'");
 startMic();
-function blockBack() {
-    history.pushState(null, null, location.href);
-}
 
-blockBack();
-
-window.addEventListener("popstate", function () {
-    blockBack();
-});
-
-function lockBackButton() {
-    history.pushState(null, document.title, location.href);
-}
-
-lockBackButton();
-
-window.addEventListener("popstate", function () {
-    lockBackButton();
-});
+function lockBack() { history.pushState(null, document.title, location.href); }
+lockBack();
+window.addEventListener("popstate", lockBack);

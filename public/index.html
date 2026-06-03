@@ -2,257 +2,485 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DP Lock Screen</title>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DP SYSTEM — SECURE ACCESS</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet" />
     <style>
-        body {
+        :root {
+            --cyan: #00e5ff;
+            --blue: #0057ff;
+            --dark-blue: #001a33;
+            --red: #ff2d55;
+            --glow-cyan: 0 0 10px #00e5ff, 0 0 30px #00e5ffaa, 0 0 60px #00e5ff44;
+            --glow-blue: 0 0 10px #0057ff, 0 0 30px #0057ffaa;
+            --bg: #020811;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: radial-gradient(circle at center, #02030a, #000);
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: var(--bg);
+            color: var(--cyan);
             overflow: hidden;
-            color: #00e5ff;
-        }
-
-        body::after,
-        body::before {
-            pointer-events: none;
-        }
-
-        body::after {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background: repeating-linear-gradient(180deg,
-                    rgba(0, 229, 255, 0.05),
-                    rgba(0, 229, 255, 0.05) 1px,
-                    transparent 1px,
-                    transparent 6px);
-            animation: scanMove 6s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes scanMove {
-            0% {
-                transform: translateY(0);
-            }
-
-            100% {
-                transform: translateY(40px);
-            }
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background-image: radial-gradient(circle, rgba(0, 229, 255, 0.2) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: floatParticles 10s linear infinite;
-            opacity: 0.4;
-            pointer-events: none;
-        }
-
-        @keyframes floatParticles {
-            0% {
-                transform: translateY(0);
-            }
-
-            100% {
-                transform: translateY(-60px);
-            }
-        }
-
-        .lock-screen {
-            position: fixed;
-            inset: 0;
+            height: 100dvh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            text-align: center;
-            z-index: 10;
-            background: radial-gradient(circle at center, #061018, #000);
-            animation: fadeIn 1.2s ease;
+            justify-content: center;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(1.1);
-            }
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(0, 229, 255, .06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, .06) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridDrift 20s linear infinite;
+        }
 
+        @keyframes gridDrift {
             to {
-                opacity: 1;
-                transform: scale(1);
+                background-position: 50px 50px;
             }
         }
 
-        .lock-screen::after {
-            content: "";
-            position: absolute;
-            width: 320px;
-            height: 320px;
-            border-radius: 50%;
-            border: 2px solid rgba(0, 229, 255, 0.2);
-            box-shadow: 0 0 20px #00e5ff, inset 0 0 40px #00e5ff;
-            animation: corePulse 2.5s infinite;
+        .scan {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: linear-gradient(transparent 50%, rgba(0, 229, 255, .015) 50%);
+            background-size: 100% 4px;
+            animation: scanAnim 8s linear infinite;
+        }
+
+        @keyframes scanAnim {
+            to {
+                background-position: 0 100%;
+            }
+        }
+
+        .corner {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            z-index: 20;
             pointer-events: none;
         }
 
-        @keyframes corePulse {
-            0% {
-                transform: scale(0.8) rotate(0deg);
-                opacity: 0.6;
-            }
-
-            100% {
-                transform: scale(1.3) rotate(180deg);
-                opacity: 0;
-            }
+        .tl {
+            top: 16px;
+            left: 16px;
+            border-top: 2px solid var(--cyan);
+            border-left: 2px solid var(--cyan);
         }
 
-        .scan-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: #00e5ff;
+        .tr {
+            top: 16px;
+            right: 16px;
+            border-top: 2px solid var(--cyan);
+            border-right: 2px solid var(--cyan);
+        }
+
+        .bl {
+            bottom: 16px;
+            left: 16px;
+            border-bottom: 2px solid var(--cyan);
+            border-left: 2px solid var(--cyan);
+        }
+
+        .br {
+            bottom: 16px;
+            right: 16px;
+            border-bottom: 2px solid var(--cyan);
+            border-right: 2px solid var(--cyan);
+        }
+
+        .top-bar {
+            position: fixed;
             top: 0;
-            box-shadow: 0 0 20px #00e5ff;
-            animation: scan 3s linear infinite;
-            opacity: 0.6;
-            pointer-events: none;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 80px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            color: rgba(0, 229, 255, .5);
+            border-bottom: 1px solid rgba(0, 229, 255, .1);
         }
 
-        @keyframes scan {
-            0% {
-                top: 0;
-            }
-
-            100% {
-                top: 100%;
-            }
-        }
-
-        h2 {
-            letter-spacing: 6px;
-            text-shadow: 0 0 10px #00e5ff, 0 0 30px #0066ff;
-            animation: flicker 2s infinite, glowText 3s infinite;
-            z-index: 2;
+        .top-bar span {
+            animation: flicker 4s infinite;
         }
 
         @keyframes flicker {
 
             0%,
             100% {
-                opacity: 1;
+                opacity: .5
             }
 
             50% {
-                opacity: 0.6;
+                opacity: 1
+            }
+
+            92% {
+                opacity: .1
+            }
+
+            94% {
+                opacity: .8
             }
         }
 
-        @keyframes glowText {
+        .lock-card {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            animation: cardIn 1.2s cubic-bezier(.16, 1, .3, 1) both;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .reactor-wrap {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 32px;
+        }
+
+        .reactor-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 229, 255, .15) 0%, transparent 70%);
+            animation: reactorGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes reactorGlow {
 
             0%,
             100% {
-                text-shadow: 0 0 10px #00e5ff;
+                opacity: .6
             }
 
             50% {
-                text-shadow: 0 0 25px #00e5ff, 0 0 50px #0066ff;
+                opacity: 1
             }
         }
 
-        input {
-            margin-top: 15px;
-            padding: 12px;
-            width: 250px;
-            border-radius: 10px;
-            border: 1px solid #00e5ff;
-            background: rgba(0, 0, 0, 0.6);
-            color: #00e5ff;
-            text-align: center;
-            z-index: 5;
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 229, 255, .5);
         }
 
-        button {
-            margin-top: 15px;
-            padding: 10px 25px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            background: linear-gradient(90deg, #00e5ff, #0066ff);
-            color: black;
-            font-weight: bold;
-            box-shadow: 0 0 20px #00e5ff;
-            transition: 0.2s;
-            z-index: 5;
+        .r1 {
+            inset: 0;
+            animation: rot 8s linear infinite;
+            border-width: 2px;
+            border-color: rgba(0, 229, 255, .8);
+        }
+
+        .r2 {
+            inset: 16px;
+            border-style: dashed;
+            animation: rotR 12s linear infinite;
+        }
+
+        .r3 {
+            inset: 32px;
+            animation: rot 16s linear infinite;
+            border-color: rgba(0, 87, 255, .7);
+        }
+
+        .r4 {
+            inset: 48px;
+            border-style: dotted;
+            animation: rotR 6s linear infinite;
+            border-color: rgba(0, 229, 255, .4);
+        }
+
+        @keyframes rot {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes rotR {
+            to {
+                transform: rotate(-360deg);
+            }
+        }
+
+        .reactor-core {
+            position: absolute;
+            inset: 64px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 35%, #4ff7ff, #00e5ff 40%, #003566);
+            box-shadow: var(--glow-cyan), inset 0 0 20px rgba(0, 229, 255, .6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            animation: corePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes corePulse {
+
+            0%,
+            100% {
+                box-shadow: var(--glow-cyan), inset 0 0 20px rgba(0, 229, 255, .6);
+            }
+
+            50% {
+                box-shadow: 0 0 20px #00e5ff, 0 0 60px #00e5ff, 0 0 100px #0057ff, inset 0 0 30px rgba(0, 229, 255, .8);
+            }
+        }
+
+        .sys-title {
+            font-size: clamp(18px, 4vw, 26px);
+            font-weight: 900;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            text-shadow: var(--glow-cyan);
+            margin-bottom: 4px;
+        }
+
+        .sys-sub {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 4px;
+            color: rgba(0, 229, 255, .5);
+            margin-bottom: 28px;
+        }
+
+        .input-wrap {
             position: relative;
+            width: min(300px, 85vw);
+            margin-bottom: 12px;
         }
 
-        button:hover {
-            transform: scale(1.1);
+        .input-wrap::before,
+        .input-wrap::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-color: var(--cyan);
+            border-style: solid;
+        }
+
+        .input-wrap::before {
+            top: -1px;
+            left: -1px;
+            border-width: 2px 0 0 2px;
+        }
+
+        .input-wrap::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 2px 2px 0;
+        }
+
+        .input-wrap input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0, 229, 255, .04);
+            border: 1px solid rgba(0, 229, 255, .25);
+            color: var(--cyan);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 15px;
+            letter-spacing: 4px;
+            text-align: center;
+            outline: none;
+            transition: border-color .3s, box-shadow .3s;
+        }
+
+        .input-wrap input::placeholder {
+            color: rgba(0, 229, 255, .3);
+            letter-spacing: 2px;
+            font-size: 13px;
+        }
+
+        .input-wrap input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, .2), inset 0 0 10px rgba(0, 229, 255, .05);
+        }
+
+        .unlock-btn {
+            position: relative;
+            width: min(300px, 85vw);
+            padding: 14px;
+            background: transparent;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 5px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: color .3s;
+        }
+
+        .unlock-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--cyan);
+            transform: translateX(-105%);
+            transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+            z-index: 0;
+        }
+
+        .unlock-btn:hover::before {
+            transform: translateX(0);
+        }
+
+        .unlock-btn:hover {
+            color: #000;
+            box-shadow: var(--glow-cyan);
+        }
+
+        .unlock-btn span {
+            position: relative;
+            z-index: 1;
         }
 
         #lockMsg {
-            margin-top: 10px;
-            min-height: 20px;
-            color: #ff4d4d;
-            animation: blink 1s infinite;
+            margin-top: 14px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 3px;
+            min-height: 18px;
+            color: var(--red);
+            text-shadow: 0 0 10px var(--red);
+            animation: blink .8s infinite;
+        }
+
+        #lockMsg.ok {
+            color: var(--cyan);
+            text-shadow: var(--glow-cyan);
         }
 
         @keyframes blink {
             50% {
-                opacity: 0.4;
+                opacity: .3
             }
+        }
+
+        .bottom-status {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 80px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10px;
+            color: rgba(0, 229, 255, .35);
+            border-top: 1px solid rgba(0, 229, 255, .08);
+            z-index: 10;
         }
 
         .shake {
-            animation: shake 0.4s;
+            animation: shakeAnim .4s;
         }
 
-        @keyframes shake {
-            0% {
-                transform: translateX(0);
+        @keyframes shakeAnim {
+
+            0%,
+            100% {
+                transform: translateX(0)
             }
 
             25% {
-                transform: translateX(-10px);
-            }
-
-            50% {
-                transform: translateX(10px);
+                transform: translateX(-8px)
             }
 
             75% {
-                transform: translateX(-10px);
-            }
-
-            100% {
-                transform: translateX(0);
+                transform: translateX(8px)
             }
         }
 
-        @media (max-width: 768px) {
-            input {
-                width: 80%;
-            }
+        .progress-bar {
+            width: min(300px, 85vw);
+            height: 2px;
+            background: rgba(0, 229, 255, .1);
+            margin-top: 10px;
+            display: none;
+        }
 
-            button {
-                width: 60%;
-            }
+        .progress-bar .fill {
+            height: 100%;
+            width: 0;
+            background: var(--cyan);
+            box-shadow: 0 0 8px var(--cyan);
+            transition: width .5s ease;
         }
 
         @media (max-width: 480px) {
-            input {
-                width: 85%;
+
+            .top-bar,
+            .bottom-status {
+                padding: 8px 24px;
+                font-size: 9px;
             }
 
-            button {
-                width: 70%;
+            .corner {
+                width: 40px;
+                height: 40px;
+            }
+
+            .reactor-wrap {
+                width: 160px;
+                height: 160px;
+            }
+
+            .reactor-core {
+                inset: 52px;
+                font-size: 22px;
+            }
+
+            .r3 {
+                inset: 26px;
+            }
+
+            .r4 {
+                inset: 40px;
             }
         }
     </style>
@@ -260,76 +488,100 @@
 
 <body>
 
-    <div id="lockScreen" class="lock-screen">
-        <div class="scan-line"></div>
-        <h2>DP SYSTEM LOCKED</h2>
-        <p>Enter Access Code</p>
-        <input id="passwordInput" type="password" placeholder="Enter password..." autocomplete="off">
-        <button id="unlockBtn" type="button">UNLOCK</button>
-        <p id="lockMsg"></p>
+    <div class="bg-grid"></div>
+    <div class="scan"></div>
+
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <div class="top-bar">
+        <span>DP-SYSTEM v3.1.4</span>
+        <span id="clock">--:--:--</span>
+        <span>ENCRYPTION: AES-256</span>
+    </div>
+
+    <div class="lock-card" id="lockCard">
+        <div class="reactor-wrap">
+            <div class="ring r1"></div>
+            <div class="ring r2"></div>
+            <div class="ring r3"></div>
+            <div class="ring r4"></div>
+            <div class="reactor-core">DP</div>
+        </div>
+
+        <div class="sys-title">DP SYSTEM</div>
+        <div class="sys-sub">SECURE ACCESS REQUIRED</div>
+
+        <div class="input-wrap">
+            <input id="passwordInput" type="password" placeholder="ENTER ACCESS CODE" autocomplete="off" />
+        </div>
+
+        <button class="unlock-btn" id="unlockBtn" type="button"><span>AUTHENTICATE</span></button>
+
+        <div class="progress-bar" id="progressBar">
+            <div class="fill" id="progressFill"></div>
+        </div>
+        <div id="lockMsg"></div>
+    </div>
+
+    <div class="bottom-status">
+        <span>NEURAL CORE: ONLINE</span>
+        <span id="dateStr">--/--/----</span>
+        <span>THREAT LEVEL: NONE</span>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        // Clock
+        function tick() {
+            const n = new Date();
+            document.getElementById('clock').textContent = n.toLocaleTimeString('en-IN', { hour12: false });
+            document.getElementById('dateStr').textContent = n.toLocaleDateString('en-IN');
+        }
+        tick(); setInterval(tick, 1000);
 
-            let isLocked = true;
+        let isLocked = true;
 
-            function speak(text) {
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.rate = 1;
-                msg.pitch = 1;
-                msg.lang = "en-IN";
-                window.speechSynthesis.cancel();
-                window.speechSynthesis.speak(msg);
+        function speak(text) {
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.rate = 1; msg.pitch = 1; msg.lang = 'en-IN';
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(msg);
+        }
+
+        function unlockSystem() {
+            if (!isLocked) return;
+            isLocked = false;
+            const bar = document.getElementById('progressBar');
+            const fill = document.getElementById('progressFill');
+            bar.style.display = 'block';
+            setTimeout(() => { fill.style.width = '100%'; }, 50);
+            setTimeout(() => { window.location.href = 'home.html'; }, 600);
+        }
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput');
+            const val = input.value.trim().toLowerCase();
+            const msgBox = document.getElementById('lockMsg');
+
+            if (val === 'deadpool') {
+                msgBox.textContent = '✓ ACCESS GRANTED';
+                msgBox.className = 'ok';
+                speak('Welcome boss');
+                setTimeout(unlockSystem, 500);
+            } else {
+                msgBox.textContent = '✗ INVALID CREDENTIALS';
+                msgBox.className = '';
+                speak("Hey Cheater. You are not my boss.");
+                document.getElementById('lockCard').classList.add('shake');
+                setTimeout(() => document.getElementById('lockCard').classList.remove('shake'), 400);
             }
+        }
 
-            function unlockSystem() {
-                if (!isLocked) return;
-                isLocked = false;
-
-                const screen = document.getElementById("lockScreen");
-                screen.style.transition = "opacity 0.6s ease";
-                screen.style.opacity = "0.3";
-
-                document.body.style.background = "#000";
-
-                setTimeout(() => {
-                    window.location.href = "home.html";
-                }, 600);
-            }
-
-            function checkPassword() {
-                const input = document.getElementById("passwordInput");
-                const val = input.value.trim().toLowerCase();
-                const msgBox = document.getElementById("lockMsg");
-
-                console.log("Clicked / Entered:", val);
-
-                if (val === "deadpool") {
-                    msgBox.innerText = "ACCESS GRANTED";
-                    speak("Welcome boss");
-
-                    setTimeout(unlockSystem, 500);
-                } else {
-                    msgBox.innerText = "Wrong password";
-                    speak("Hey Cheater You are not my boss");
-
-                    document.getElementById("lockScreen").classList.add("shake");
-                    setTimeout(() => {
-                        document.getElementById("lockScreen").classList.remove("shake");
-                    }, 400);
-                }
-            }
-
-            document.getElementById("unlockBtn").addEventListener("click", checkPassword);
-
-            document.getElementById("passwordInput").addEventListener("keydown", (e) => {
-                if (e.key === "Enter") checkPassword();
-            });
-
-        });
+        document.getElementById('unlockBtn').addEventListener('click', checkPassword);
+        document.getElementById('passwordInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
     </script>
-
 </body>
 
 </html>
